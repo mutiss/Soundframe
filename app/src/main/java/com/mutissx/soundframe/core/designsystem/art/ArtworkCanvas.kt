@@ -1,5 +1,6 @@
 package com.mutissx.soundframe.core.designsystem.art
 
+import android.graphics.Bitmap
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -12,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
@@ -19,7 +21,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -44,14 +45,20 @@ import com.mutissx.soundframe.domain.model.ArtworkSettings
 import com.mutissx.soundframe.domain.model.AudioFeatures
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
 
 /**
  * Live generative artwork. Geometry is prepared off the main thread whenever the scene or size
- * changes and crossfaded in; the time-independent layer is cached in an offscreen GPU layer, and
- * only the dynamic layer redraws each frame (reading time in the draw phase, so no recomposition).
+ * changes and crossfaded in. The time-independent layer is rasterised into a bitmap on the same
+ * background thread, so the first frame of a new artwork is a single texture draw instead of
+ * thousands of strokes on the RenderThread; only the dynamic layer redraws each frame (reading
+ * time in the draw phase, so no recomposition).
+ *
+ * [onPrepared] fires once the first artwork is ready to draw. Pass [fadeIn] = false when the
+ * caller animates the artwork's appearance itself.
  */
 @Composable
 fun ArtworkCanvas(
@@ -61,15 +68,18 @@ fun ArtworkCanvas(
     animate: Boolean = settings.animate,
     signature: Boolean = false,
     contentDescription: String? = null,
+    fadeIn: Boolean = true,
+    onPrepared: () -> Unit = {},
 ) {
     val reduceMotion = LocalReduceMotion.current
     val brand = koinInject<BrandTypeface>()
+    val preparedCallback by rememberUpdatedState(onPrepared)
     var size by remember { mutableStateOf(IntSize.Zero) }
     val scene = remember(features, settings.palette, settings.background, settings.intensity, settings.complexity, settings.variation) {
         ArtScene.from(features, settings)
     }
-    var current by remember { mutableStateOf<PreparedArt?>(null) }
-    var previous by remember { mutableStateOf<PreparedArt?>(null) }
+    var current by remember { mutableStateOf<ArtFrame?>(null) }
+    var previous by remember { mutableStateOf<ArtFrame?>(null) }
     val fade = remember { Animatable(1f) }
 
     LaunchedEffect(scene, settings.style, size, signature) {
@@ -78,14 +88,21 @@ fun ArtworkCanvas(
         if (current != null) delay(60)
         val typeface = if (signature) brand.typeface else null
         val prepared = withContext(Dispatchers.Default) {
-            ArtworkComposer.prepare(settings.style, scene, size.width, size.height, typeface, signature)
+            val art = ArtworkComposer.prepare(settings.style, scene, size.width, size.height, typeface, signature)
+            ensureActive()
+            val still = Bitmap.createBitmap(art.width, art.height, Bitmap.Config.ARGB_8888)
+            art.drawStatic(android.graphics.Canvas(still))
+            still.prepareToDraw()
+            ArtFrame(art, still)
         }
+        val first = current == null
         previous = current
         current = prepared
-        if (previous != null) {
+        if (first) preparedCallback()
+        if (!first) {
             fade.snapTo(0f)
             fade.animateTo(1f, tween(SfMotion.CROSSFADE, easing = SfMotion.EaseInOut))
-        } else {
+        } else if (fadeIn) {
             fade.snapTo(0f)
             fade.animateTo(1f, tween(SfMotion.MEDIUM))
         }
@@ -111,11 +128,17 @@ fun ArtworkCanvas(
     }
 }
 
+/** A prepared artwork plus its static layer, already rasterised at the prepared size. */
+private class ArtFrame(val art: PreparedArt, val still: Bitmap)
+
+private val stillPaint = android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
+
 @Composable
-private fun ArtLayer(art: PreparedArt, time: State<Float>, alpha: () -> Float) {
+private fun ArtLayer(frame: ArtFrame, time: State<Float>, alpha: () -> Float) {
+    val art = frame.art
     Box(Modifier.fillMaxSize().graphicsLayer { this.alpha = alpha() }) {
-        Canvas(Modifier.fillMaxSize().graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }) {
-            drawPrepared(art) { art.drawStatic(it) }
+        Canvas(Modifier.fillMaxSize()) {
+            drawPrepared(art) { it.drawBitmap(frame.still, 0f, 0f, stillPaint) }
         }
         Canvas(Modifier.fillMaxSize()) {
             val t = time.value

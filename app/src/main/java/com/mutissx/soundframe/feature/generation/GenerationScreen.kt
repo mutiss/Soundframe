@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,12 +88,15 @@ fun GenerationScreen(
     val burst = remember { Animatable(0f) }
     val reveal = remember { Animatable(0f) }
     val color = remember { Animatable(0f) }
+    var artPrepared by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val speed = if (reduceMotion) 0.4f else 1f
         contract.animateTo(1f, tween((1000 * speed).toInt(), easing = SfMotion.EaseInOut))
         burst.animateTo(1f, tween((1100 * speed).toInt(), easing = SfMotion.EaseOutExpo))
-        snapshotFlow { currentState.isReady }.first { it }
+        // Hold the orbit until the artwork is fully prepared, so the reveal never animates an empty
+        // frame or competes with preparation for the CPU.
+        snapshotFlow { currentState.isReady && artPrepared }.first { it }
         launch { burst.animateTo(0f, tween(900)) }
         reveal.animateTo(1f, tween((1400 * speed).toInt(), easing = SfMotion.EaseOutExpo))
         color.animateTo(1f, tween((1100 * speed).toInt(), easing = SfMotion.EaseInOut))
@@ -125,6 +130,8 @@ fun GenerationScreen(
                             .clip(SfShapes.artwork)
                             .border(1.dp, Color(0x2EFFFFFF), SfShapes.artwork),
                         contentDescription = stringResource(R.string.generation_artwork_description),
+                        fadeIn = false,
+                        onPrepared = { artPrepared = true },
                     )
                 }
             }
