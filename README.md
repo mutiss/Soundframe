@@ -218,13 +218,9 @@ All UI text lives in string resources, with English as the default (`values/`) a
 
 ## Store kit
 
-`store/` contains the Play Store submission kit:
-- localised listings in fastlane `supply` layout
-- the 512 px icon and 1024×500 feature graphics, rendered by the app's own engine
-- 7 phone screenshots per language, captured on a Pixel 9 Pro XL
-- the privacy-policy site, deployed at https://soundframe-privacy.vercel.app/ (Spanish at `/es/`)
+The Play Store submission kit (listings, graphics, store screenshots, and the Play Console notes) is kept locally in `store/`, which is git-ignored and not part of this repository.
 
-See `store/PLAY_CONSOLE.md` for every console field, the Data safety answers, and the remaining steps (signing and testing track).
+The privacy policy is deployed at https://soundframe-privacy.vercel.app/ (Spanish at `/es/`).
 
 ## Verification status
 
