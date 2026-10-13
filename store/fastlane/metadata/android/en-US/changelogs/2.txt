@@ -1,0 +1,7 @@
+Lighter and faster.
+
+• Download size reduced by more than half
+• Smoother animations in the studio
+• Quiet sounds now create colourful, luminous artworks
+• Full Spanish translation
+• Stability improvements

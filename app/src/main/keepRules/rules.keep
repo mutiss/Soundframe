@@ -1,0 +1,18 @@
+# SOUNDFRAME keep rules. AGP merges every file in src/main/keepRules into the R8 configuration.
+# Libraries (Compose, Room, Koin, kotlinx-serialization, Navigation) ship their own consumer rules;
+# these are app-specific safety nets.
+
+# Saved artworks persist AudioFeatures/ArtworkSettings as JSON in Room, and navigation routes are
+# serialised into the back stack. kotlinx-serialization bakes names in at compile time, but keep the
+# models and their generated serializers intact so data written by older versions always decodes.
+-keep,includedescriptorclasses class com.mutissx.soundframe.domain.model.** { *; }
+-keep class com.mutissx.soundframe.app.navigation.** { *; }
+-keepclassmembers class com.mutissx.soundframe.** {
+    *** Companion;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep source file names and line numbers so de-obfuscated stack traces point to real lines,
+# while the original source file name itself is hidden.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

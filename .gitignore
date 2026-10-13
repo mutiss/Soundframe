@@ -1,0 +1,59 @@
+# ─── Secrets & signing (never commit) ─────────────────────────────────────────
+# The upload key and its passwords live outside the repo in ../Soundframe-keys/;
+# these patterns are a safety net in case a copy ever lands inside the project.
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+keystore.properties
+signing.properties
+google-services.json
+play-service-account*.json
+service-account*.json
+.env
+.env.*
+!.env.example
+
+# ─── Release artifacts ─────────────────────────────────────────────────────────
+# Signed bundles are build outputs, and R8 mapping files reverse the obfuscation.
+/release/
+*.aab
+*.apk
+*.apks
+mapping*.txt
+*.ap_
+*.dex
+
+# ─── Deployment state ──────────────────────────────────────────────────────────
+.vercel/
+
+# ─── Local machine configuration ───────────────────────────────────────────────
+local.properties
+*.iml
+.gradle/
+.kotlin/
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# ─── IDE ───────────────────────────────────────────────────────────────────────
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/deploymentTargetDropDown.xml
+/.idea/androidTestResultsUserPreferences.xml
+/.idea/shelf/
+/.idea/**/usage.statistics.xml
+
+# ─── OS noise ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

@@ -1,0 +1,9 @@
+Bienvenido a Soundframe 1.0: cada sonido tiene una forma.
+
+• Graba hasta 10 segundos o importa un archivo de audio
+• Tu sonido se analiza en tu dispositivo y se convierte en arte generativo
+• 5 estilos: Aura, Flor, Partículas, Topografía y Eco
+• 7 paletas, control de intensidad y complejidad, variaciones infinitas
+• Exporta imágenes HD (hasta 2048 px) y vídeos 1080×1920 con tu sonido original
+• Galería privada con favoritos
+• 100 % sin conexión: sin cuenta, sin anuncios, sin rastreo

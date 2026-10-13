@@ -1,0 +1,9 @@
+Welcome to Soundframe 1.0, where every sound has a shape.
+
+• Record up to 10 seconds or import an audio file
+• Your sound is analysed on your device and turned into generative art
+• 5 styles: Aura, Bloom, Particles, Topography and Echo
+• 7 palettes, intensity and complexity controls, endless variations
+• Export HD images (up to 2048 px) and 1080×1920 videos with your original sound
+• Private gallery with favourites
+• 100% offline: no account, no ads, no tracking

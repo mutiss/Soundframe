@@ -1,0 +1,234 @@
+<resources>
+    <!-- Common -->
+    <string name="action_back">Atrás</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_continue">Continuar</string>
+    <string name="action_skip">Saltar</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="action_try_again">Intentar de nuevo</string>
+    <string name="action_go_back">Volver</string>
+    <string name="action_rename">Renombrar</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_export_share">Exportar y compartir</string>
+    <string name="action_open_item">Abrir %1$s</string>
+    <string name="action_add_favorite">Añadir a favoritos</string>
+    <string name="action_remove_favorite">Quitar de favoritos</string>
+    <string name="private_by_design">Privada por diseño</string>
+    <string name="privacy_footer">Privada por diseño: tus sonidos nunca salen de este dispositivo.</string>
+    <string name="nav_studio">Estudio</string>
+    <string name="nav_gallery">Galería</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="cd_start_recording">Empezar a grabar</string>
+    <string name="cd_stop_recording">Detener grabación</string>
+    <string name="stat_length">Duración</string>
+    <string name="stat_brightness">Brillo</string>
+    <string name="stat_onsets">Ataques</string>
+    <string name="stat_dynamics">Dinámica</string>
+    <string name="artwork_description">Obra %1$s: %2$s</string>
+
+    <!-- Styles, palettes, grounds -->
+    <string name="style_aura">Aura</string>
+    <string name="style_bloom">Flor</string>
+    <string name="style_particles">Partículas</string>
+    <string name="style_topography">Topografía</string>
+    <string name="style_echo">Eco</string>
+    <string name="palette_aurora">Aurora</string>
+    <string name="palette_solar_flare">Llamarada</string>
+    <string name="palette_deep_ocean">Océano</string>
+    <string name="palette_rose_quartz">Cuarzo rosa</string>
+    <string name="palette_electric_violet">Violeta</string>
+    <string name="palette_nocturne">Nocturno</string>
+    <string name="palette_monochrome">Monocromo</string>
+    <string name="ground_void">Vacío</string>
+    <string name="ground_midnight">Medianoche</string>
+    <string name="ground_ember">Brasa</string>
+    <string name="ground_pearl">Perla</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_overline">Cada sonido tiene una forma</string>
+    <string name="onboarding_1_title">Tu mundo suena precioso.</string>
+    <string name="onboarding_1_body">Convierte los sonidos de cada día en arte visual extraordinario.</string>
+    <string name="onboarding_2_overline">01 — Graba</string>
+    <string name="onboarding_2_title">Diez segundos es todo lo que necesitas.</string>
+    <string name="onboarding_2_body">Una risa, la lluvia, tu latido, una canción. Captura cualquier sonido a tu alrededor.</string>
+    <string name="onboarding_3_overline">02 — Míralo convertirse en arte</string>
+    <string name="onboarding_3_title">Sonido esculpido.</string>
+    <string name="onboarding_3_body">El ritmo, el tono y la textura se miden en tu dispositivo y se transforman en una composición que nadie más puede crear.</string>
+    <string name="onboarding_4_overline">03 — Guarda y comparte</string>
+    <string name="onboarding_4_title">Hecho para compartir.</string>
+    <string name="onboarding_4_body">Crea tu galería y exporta imágenes y vídeos en alta resolución para tus historias.</string>
+    <string name="onboarding_cta">Crea tu primer Soundframe</string>
+
+    <!-- Home -->
+    <string name="home_headline_prefix">"¿Qué forma\ntiene tu "</string>
+    <string name="home_headline_accent">mundo</string>
+    <string name="home_headline_suffix">?</string>
+    <string name="home_record_hint">Toca para escuchar · hasta 10 segundos</string>
+    <string name="home_import">Importar un archivo de audio</string>
+    <string name="home_recent">Creaciones recientes</string>
+    <string name="home_see_all">Ver las %1$d</string>
+    <string name="home_empty_title">Aquí vivirán tus creaciones.</string>
+    <string name="home_empty_body">Graba una risa, la lluvia, una melodía: cada sonido se convierte en una obra única.</string>
+    <string name="home_hero_from">de %1$s</string>
+    <string name="home_hero_description">Obra generativa creada a partir de %1$s</string>
+    <string name="demo_voice">una voz</string>
+    <string name="demo_song">una canción</string>
+    <string name="demo_rain">la lluvia</string>
+    <string name="demo_ocean">las olas del mar</string>
+    <string name="demo_heartbeat">un latido</string>
+
+    <!-- Recording -->
+    <string name="recording_status_recording">Grabando</string>
+    <string name="recording_status_ready">Lista</string>
+    <string name="recording_of_ten">de 10 segundos</string>
+    <string name="recording_hint_idle">Toca para empezar a grabar</string>
+    <string name="recording_hint_active">Escuchando… toca para terminar</string>
+    <string name="recording_hint_silenced">Otra aplicación está usando el micrófono</string>
+    <string name="recording_import">o importa un archivo de audio</string>
+    <string name="recording_blocked_title">El acceso al micrófono está desactivado</string>
+    <string name="recording_blocked_body">Actívalo en Ajustes para grabar. SOUNDFRAME analiza el audio solo en este dispositivo: no se sube nada.</string>
+    <string name="recording_open_settings">Abrir ajustes</string>
+    <string name="recording_rationale_title">Deja que SOUNDFRAME escuche</string>
+    <string name="recording_rationale_body">El micrófono solo se usa mientras grabas. Tu sonido se analiza en este dispositivo y nunca sale de él.</string>
+    <string name="recording_allow">Permitir micrófono</string>
+    <string name="recording_error_title">Probemos otra vez</string>
+
+    <!-- Generation -->
+    <string name="generation_analysing">Analizando en el dispositivo</string>
+    <string name="generation_sculpting">Esculpiendo</string>
+    <string name="generation_listening">Escuchando la forma\nde tu sonido</string>
+    <string name="generation_failed_title">Este sonido se ha escapado</string>
+    <string name="generation_artwork_description">Tu obra generada</string>
+
+    <!-- Editor -->
+    <string name="editor_panel_style">Estilo</string>
+    <string name="editor_panel_palette">Paleta</string>
+    <string name="editor_panel_tune">Ajustar</string>
+    <string name="editor_panel_ground">Fondo</string>
+    <string name="editor_toggle_controls">Mostrar u ocultar controles</string>
+    <string name="editor_saved">Guardada en tu galería</string>
+    <string name="editor_save">Guardar en la galería</string>
+    <string name="editor_saved_state">Guardada</string>
+    <string name="editor_rename_artwork">Renombrar obra</string>
+    <string name="editor_name_title">Ponle nombre a tu obra</string>
+    <string name="editor_name_placeholder">Sonido sin título</string>
+    <string name="editor_leave_title">¿Salir sin guardar?</string>
+    <string name="editor_leave_body">Esta obra todavía no se ha guardado en tu galería.</string>
+    <string name="editor_discard">Descartar</string>
+    <string name="editor_keep_editing">Seguir editando</string>
+    <string name="editor_intensity">Intensidad</string>
+    <string name="editor_complexity">Complejidad</string>
+    <string name="editor_new_variation">Nueva variación</string>
+    <string name="editor_variation_n">Variación %1$d</string>
+    <string name="editor_original">Volver al original</string>
+    <string name="editor_animation">Animación</string>
+    <string name="editor_nothing">Nada que editar</string>
+
+    <!-- Gallery -->
+    <plurals name="gallery_count">
+        <item quantity="one">%d obra</item>
+        <item quantity="many">%d obras</item>
+        <item quantity="other">%d obras</item>
+    </plurals>
+    <string name="gallery_newest">Recientes</string>
+    <string name="gallery_oldest">Antiguas</string>
+    <string name="gallery_favourites">Favoritas</string>
+    <string name="gallery_empty_title">Todavía no hay nada</string>
+    <string name="gallery_empty_body">Cada sonido que captures se convierte en una pieza de tu galería.</string>
+    <string name="gallery_no_favourites_title">Aún no hay favoritas</string>
+    <string name="gallery_no_favourites_body">Toca el corazón de una obra para tenerla siempre cerca.</string>
+    <string name="gallery_record">Grabar un sonido</string>
+    <string name="gallery_item_meta">%1$s · %2$s</string>
+
+    <!-- Detail -->
+    <string name="detail_signature">Firma sonora</string>
+    <string name="detail_play">Reproducir el sonido original</string>
+    <string name="detail_pause">Pausar el sonido original</string>
+    <string name="detail_playing">Reproduciendo el sonido original</string>
+    <string name="detail_hear">Escucha el original</string>
+    <string name="detail_private">Guardado de forma privada en este dispositivo</string>
+    <string name="detail_delete_title">¿Eliminar esta obra?</string>
+    <string name="detail_delete_body">La obra y su grabación original se eliminarán de forma permanente de este dispositivo.</string>
+    <string name="detail_missing">Esta obra ya no existe.</string>
+
+    <!-- Export -->
+    <string name="export_title">Exportar</string>
+    <string name="export_image">Imagen</string>
+    <string name="export_video">Vídeo</string>
+    <string name="export_square">Cuadrado</string>
+    <string name="export_story">Historia</string>
+    <string name="export_ultra">Ultra</string>
+    <string name="export_dimensions">%1$d × %2$d</string>
+    <string name="export_signature">Firma SOUNDFRAME</string>
+    <string name="export_signature_body">Una marca sutil en la parte inferior</string>
+    <string name="export_duration">Duración</string>
+    <string name="export_duration_value">%1$d s · 1080 × 1920</string>
+    <string name="export_original_sound">Sonido original</string>
+    <string name="export_original_sound_body">Incluye tu grabación como banda sonora</string>
+    <string name="export_original_sound_missing">No se conservó la grabación original</string>
+    <string name="export_render_png">Generar PNG de %1$s</string>
+    <string name="export_render_video">Generar vídeo</string>
+    <string name="export_rendering">Generando…</string>
+    <string name="export_cancel">Cancelar</string>
+    <string name="export_encoding">Codificando</string>
+    <string name="export_preview">Vista previa de la exportación</string>
+    <string name="export_cancelled">Exportación cancelada</string>
+    <string name="export_saved_pictures">Guardada en Imágenes/Soundframe</string>
+    <string name="export_saved_movies">Guardado en Películas/Soundframe</string>
+    <string name="export_save_failed">No se ha podido guardar en tu dispositivo</string>
+    <string name="share_chooser">Comparte tu Soundframe</string>
+    <string name="share_text">Hecho con SOUNDFRAME: cada sonido tiene una forma.</string>
+
+    <!-- Settings -->
+    <string name="settings_overline">Preferencias</string>
+    <string name="settings_privacy_1">El sonido se analiza por completo en este dispositivo.</string>
+    <string name="settings_privacy_2">No se sube nada. Sin cuenta, sin rastreo, sin nube.</string>
+    <string name="settings_privacy_3">El micrófono solo se usa mientras grabas.</string>
+    <string name="settings_privacy_4">Tus grabaciones son privadas salvo que decidas compartirlas.</string>
+    <string name="settings_keep_audio">Conservar las grabaciones originales</string>
+    <string name="settings_keep_audio_body">Necesario para volver a escucharlas y añadirlas a los vídeos</string>
+    <string name="settings_sign">Firmar mis exportaciones</string>
+    <string name="settings_sign_body">Añade una marca SOUNDFRAME sutil</string>
+    <string name="settings_reduce_motion">Reducir movimiento</string>
+    <string name="settings_reduce_motion_body">Mantiene las obras quietas y suaviza las transiciones</string>
+    <string name="settings_data_title">Tus datos</string>
+    <string name="settings_data_body">Elimina todas las obras, grabaciones y miniaturas guardadas por SOUNDFRAME.</string>
+    <string name="settings_delete_all">Eliminar todas las creaciones</string>
+    <string name="settings_delete_title">¿Eliminarlo todo?</string>
+    <string name="settings_delete_body">Todas las obras y grabaciones se eliminarán de forma permanente de este dispositivo. No se puede deshacer.</string>
+    <string name="settings_delete_confirm">Eliminar todo</string>
+    <string name="settings_privacy_policy">Política de privacidad</string>
+    <string name="privacy_policy_url">https://soundframe-privacy.vercel.app/es/</string>
+    <string name="settings_version">Versión %1$s · Cada sonido tiene una forma.</string>
+
+    <!-- Errors -->
+    <string name="error_permission">SOUNDFRAME necesita el micrófono para escuchar tu sonido.</string>
+    <string name="error_mic_unavailable">El micrófono no está disponible ahora mismo. Puede que otra aplicación lo esté usando.</string>
+    <string name="error_interrupted">Se ha interrumpido la grabación. Inténtalo otra vez.</string>
+    <string name="error_too_short">Ha sido demasiado corto. Graba al menos medio segundo.</string>
+    <string name="error_unsupported">Tu dispositivo no admite este formato de audio.</string>
+    <string name="error_no_audio">No hemos encontrado audio en ese archivo.</string>
+    <string name="error_unreadable">No se ha podido abrir ese archivo.</string>
+    <string name="error_no_space">Tu dispositivo no tiene espacio. Libera algo y vuelve a intentarlo.</string>
+    <string name="error_missing_file">Falta un archivo de esta obra.</string>
+    <string name="error_write_failed">No hemos podido guardar en tu dispositivo.</string>
+    <string name="error_session_expired">Esta grabación ya no está disponible. Graba de nuevo, por favor.</string>
+    <string name="error_artwork_missing">Esta obra ya no existe.</string>
+    <string name="error_export">No se ha podido completar la exportación en este dispositivo.</string>
+    <string name="error_generic">Algo ha salido mal. Inténtalo de nuevo.</string>
+
+    <!-- Generated titles: noun first, then a gender-invariant adjective, so grammar always agrees. -->
+    <string name="title_pattern">%2$s %1$s</string>
+    <string-array name="title_adj_quiet_dark"><item>suave</item><item>tenue</item><item>leve</item><item>lunar</item></string-array>
+    <string-array name="title_adj_quiet_bright"><item>celeste</item><item>frágil</item><item>dulce</item><item>breve</item></string-array>
+    <string-array name="title_adj_loud_dark"><item>ardiente</item><item>salvaje</item><item>feroz</item><item>solar</item></string-array>
+    <string-array name="title_adj_loud_bright"><item>radiante</item><item>brillante</item><item>veloz</item><item>audaz</item></string-array>
+    <string-array name="title_nouns_aura"><item>Deriva</item><item>Velo</item><item>Corriente</item><item>Cinta</item></string-array>
+    <string-array name="title_nouns_bloom"><item>Flor</item><item>Pétalo</item><item>Orquídea</item><item>Corola</item></string-array>
+    <string-array name="title_nouns_particles"><item>Constelación</item><item>Enjambre</item><item>Polvo</item><item>Lluvia</item></string-array>
+    <string-array name="title_nouns_topography"><item>Relieve</item><item>Marea</item><item>Cresta</item><item>Contorno</item></string-array>
+    <string-array name="title_nouns_echo"><item>Eco</item><item>Onda</item><item>Pulso</item><item>Resonancia</item></string-array>
+</resources>

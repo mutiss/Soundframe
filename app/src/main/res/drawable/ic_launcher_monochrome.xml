@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed-icon glyph: an eight-petal bloom inside the 72dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <group android:pivotX="54" android:pivotY="54" android:rotation="0"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="45"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="90"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="135"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="180"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="225"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="270"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="315"><path android:fillColor="#FFFFFFFF" android:pathData="M54,50.5 C49.5,44 49.5,36 54,31 C58.5,36 58.5,44 54,50.5 Z" /></group>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M54,49.5 a4.5,4.5 0 1,0 0.01,0 Z" />
+</vector>
