@@ -15,7 +15,7 @@ import kotlin.math.sqrt
 /**
  * PARTICLES — a constellation flowing through a curl-like noise field. Trajectories are integrated
  * once in [prepare] (deterministic for a given seed), so animation only slides a bright head and a
- * short trail along each precomputed path: thousands of particles cost a few draw calls per frame.
+ * short trail along each precomputed path; the threads behind them are drawn once into the static layer.
  * Onset-rich sounds create more vortices; louder sounds create denser fields.
  */
 internal object ParticlesRenderer : ArtRenderer {
@@ -37,23 +37,25 @@ internal object ParticlesRenderer : ArtRenderer {
         private val speed = FloatArray(count)
         private val isStar = BooleanArray(count)
         private val threads = Array(BUCKETS) { FloatList(count * STEPS * 4 / BUCKETS + 16) }
+        private val trailMesh = StrokeMesh()
+        private val trailHalfWidth = max(1.2f, minDim * 0.0022f) / 2f
         // Sized for the worst case of every particle landing in one colour bucket.
-        private val trailScratch = Array(BUCKETS) { FloatArray(count * TRAIL * 4) }
-        private val trailSize = IntArray(BUCKETS)
         private val headScratch = Array(BUCKETS) { FloatArray(count * 2 + 16) }
         private val headSize = IntArray(BUCKETS)
         private val starScratch = FloatArray(count * 2)
         private val bucketColors = IntArray(BUCKETS) { scene.color(it / (BUCKETS - 1f)) }
+        private val headColors = IntArray(BUCKETS) {
+            ColorUtil.withAlpha(ColorUtil.lerp(bucketColors[it], 0xFFFFFFFF.toInt(), 0.2f), 0.55f + 0.2f * p.intensity)
+        }
+        private val headRadius = max(1.6f, minDim * (0.0028f + 0.002f * p.detail)) / 2f
 
         private val threadPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             strokeWidth = max(1f, minDim * 0.0011f)
             blendMode = scene.glowBlend
         }
-        private val trailPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            strokeWidth = max(1.2f, minDim * 0.0022f)
+        private val trailPaint = Paint().apply {
+            color = 0xFFFFFFFF.toInt()
             blendMode = scene.glowBlend
         }
         private val headPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -134,23 +136,29 @@ internal object ParticlesRenderer : ArtRenderer {
         }
 
         override fun drawDynamic(canvas: Canvas, timeSec: Float) {
-            trailSize.fill(0)
             headSize.fill(0)
             var stars = 0
+            val trailAlpha = 0.18f + 0.3f * p.intensity
             for (i in 0 until count) {
                 val b = bucketOf[i]
                 val pos = ((phase[i] + timeSec * speed[i]) % 1f) * (STEPS - 1)
                 val head = pos.toInt()
                 val base = i * STEPS * 2
-                val trail = trailScratch[b]
                 val from = max(0, head - TRAIL)
-                for (s in from until head) {
-                    val o = trailSize[b]
-                    trail[o] = paths[base + s * 2]
-                    trail[o + 1] = paths[base + s * 2 + 1]
-                    trail[o + 2] = paths[base + s * 2 + 2]
-                    trail[o + 3] = paths[base + s * 2 + 3]
-                    trailSize[b] = o + 4
+                if (head > from) {
+                    // Trails go out as a few large meshes. Anti-aliased wide lines fall back to a path
+                    // draw per segment on the GPU backend, which dominated frame time; overlapping
+                    // trails still add up under the glow blend.
+                    val color = ColorUtil.withAlpha(bucketColors[b], trailAlpha)
+                    trailMesh.begin(canvas, trailPaint, head - from + 1)
+                    for (s in from..head) {
+                        val prev = base + max(s - 1, from) * 2
+                        val next = base + min(s + 1, head) * 2
+                        val tx = paths[next] - paths[prev]
+                        val ty = paths[next + 1] - paths[prev + 1]
+                        val len = sqrt(tx * tx + ty * ty)
+                        if (len > 0f) trailMesh.point(paths[base + s * 2], paths[base + s * 2 + 1], -ty / len, tx / len, trailHalfWidth, color)
+                    }
                 }
                 val hx = paths[base + head * 2]
                 val hy = paths[base + head * 2 + 1]
@@ -164,18 +172,15 @@ internal object ParticlesRenderer : ArtRenderer {
                     stars += 2
                 }
             }
-            val trailAlpha = 0.18f + 0.3f * p.intensity
+            // Heads join the same meshes, after every trail. Thousands of anti-aliased round points
+            // are drawn one by one on the GPU backend.
             for (b in 0 until BUCKETS) {
-                if (trailSize[b] > 0) {
-                    trailPaint.color = ColorUtil.withAlpha(bucketColors[b], trailAlpha)
-                    canvas.drawLines(trailScratch[b], 0, trailSize[b], trailPaint)
-                }
-                if (headSize[b] > 0) {
-                    headPaint.strokeWidth = max(1.6f, minDim * (0.0028f + 0.002f * p.detail))
-                    headPaint.color = ColorUtil.withAlpha(ColorUtil.lerp(bucketColors[b], 0xFFFFFFFF.toInt(), 0.2f), 0.55f + 0.2f * p.intensity)
-                    canvas.drawPoints(headScratch[b], 0, headSize[b], headPaint)
+                val heads = headScratch[b]
+                for (h in 0 until headSize[b] step 2) {
+                    trailMesh.dot(canvas, trailPaint, heads[h], heads[h + 1], headRadius, headColors[b])
                 }
             }
+            trailMesh.flush(canvas, trailPaint)
             if (stars > 0) {
                 val twinkle = 0.6f + 0.4f * sin(timeSec * 2.3f)
                 headPaint.color = ColorUtil.withAlpha(scene.color(0f), 0.18f * twinkle)

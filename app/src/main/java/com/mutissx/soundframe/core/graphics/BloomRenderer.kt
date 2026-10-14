@@ -25,14 +25,14 @@ internal object BloomRenderer : ArtRenderer {
     override fun prepare(scene: ArtScene, width: Int, height: Int): PreparedArt = Prepared(scene, width, height)
 
     private const val STEPS = 420
+    private const val VEIN_STEPS = 12
 
     private class Layer(
         val petals: Path,
-        val veins: Path,
         val fill: Paint,
         val shadow: Paint,
-        val outline: Paint,
-        val veinPaint: Paint,
+        /** Veins, then the petal outline, built once in layer space. */
+        val lines: StrokeMesh,
         val rotation: Float,
         val spin: Float,
         val breathPhase: Float,
@@ -49,6 +49,7 @@ internal object BloomRenderer : ArtRenderer {
         private val stamen: FloatArray
         private val stamenPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { strokeCap = Paint.Cap.ROUND }
         private val corePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val linePaint = Paint().apply { color = 0xFFFFFFFF.toInt() }
         private val pollen: FloatArray // radius, angle, speed per grain
         private val pollenPoints: FloatArray
         private val pollenPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -71,6 +72,7 @@ internal object BloomRenderer : ArtRenderer {
                 val petalsOnLayer = if (l % 2 == 1 && p.detail > 0.55f) n * 2 else n
                 val offset = (l * PI.toFloat() / petalsOnLayer) * twist
                 val petals = Path()
+                val outlinePts = FloatArray((STEPS + 1) * 2)
                 for (s in 0..STEPS) {
                     val th = s / STEPS.toFloat() * 2f * PI.toFloat()
                     val local = (th * petalsOnLayer / (2f * PI.toFloat())) % 1f
@@ -81,24 +83,56 @@ internal object BloomRenderer : ArtRenderer {
                     val x = cx + rr * cos(th + offset)
                     val y = cy + rr * sin(th + offset)
                     if (s == 0) petals.moveTo(x, y) else petals.lineTo(x, y)
+                    outlinePts[s * 2] = x
+                    outlinePts[s * 2 + 1] = y
                 }
                 petals.close()
 
-                val veins = Path()
+                val tc = 0.15f + depth * 0.8f
                 val veinsPerPetal = 1 + (p.detail * 2).toInt()
                 val veinCount = petalsOnLayer * veinsPerPetal
+                // Strokes go out as a mesh; large anti-aliased stroked paths are rasterised on the
+                // CPU every frame on the GPU backend.
+                val lines = StrokeMesh(STEPS + 1 + veinCount * (VEIN_STEPS + 1))
+                val veinColor = ColorUtil.withAlpha(scene.color(tc + 0.5f), 0.18f + 0.2f * p.detail)
+                val veinHalfWidth = max(0.8f, radius * 0.0025f) / 2f
                 for (v in 0 until veinCount) {
                     val a = v * 2f * PI.toFloat() / veinCount + offset
                     val isMidrib = v % veinsPerPetal == 0
                     val len = r * if (isMidrib) 0.9f else 0.72f
-                    veins.moveTo(cx + cos(a) * r * 0.12f, cy + sin(a) * r * 0.12f)
-                    veins.quadTo(
-                        cx + cos(a + 0.12f) * len * 0.55f, cy + sin(a + 0.12f) * len * 0.55f,
-                        cx + cos(a) * len, cy + sin(a) * len,
-                    )
+                    // A quadratic curve from near the centre, bowing slightly sideways.
+                    val sx = cx + cos(a) * r * 0.12f
+                    val sy = cy + sin(a) * r * 0.12f
+                    val qx = cx + cos(a + 0.12f) * len * 0.55f
+                    val qy = cy + sin(a + 0.12f) * len * 0.55f
+                    val ex = cx + cos(a) * len
+                    val ey = cy + sin(a) * len
+                    lines.begin(VEIN_STEPS + 1)
+                    for (s in 0..VEIN_STEPS) {
+                        val t = s / VEIN_STEPS.toFloat()
+                        val u = 1f - t
+                        val tx = 2f * u * (qx - sx) + 2f * t * (ex - qx)
+                        val ty = 2f * u * (qy - sy) + 2f * t * (ey - qy)
+                        val tl = sqrt(tx * tx + ty * ty)
+                        lines.point(
+                            u * u * sx + 2f * u * t * qx + t * t * ex, u * u * sy + 2f * u * t * qy + t * t * ey,
+                            -ty / tl, tx / tl, veinHalfWidth, veinColor,
+                        )
+                    }
+                }
+                val outlineColor = ColorUtil.withAlpha(scene.color(tc + 0.45f), 0.35f + 0.35f * p.contrast)
+                val outlineHalfWidth = max(1f, radius * 0.004f) / 2f
+                lines.begin(STEPS + 1)
+                for (s in 0..STEPS) {
+                    // The outline is closed (last point == first), so neighbours wrap around the seam.
+                    val prev = if (s == 0) STEPS - 1 else s - 1
+                    val next = if (s == STEPS) 1 else s + 1
+                    val tx = outlinePts[next * 2] - outlinePts[prev * 2]
+                    val ty = outlinePts[next * 2 + 1] - outlinePts[prev * 2 + 1]
+                    val tl = sqrt(tx * tx + ty * ty)
+                    lines.point(outlinePts[s * 2], outlinePts[s * 2 + 1], -ty / tl, tx / tl, outlineHalfWidth, outlineColor)
                 }
 
-                val tc = 0.15f + depth * 0.8f
                 val alpha = (0.55f + 0.4f * p.intensity) * (0.85f + 0.15f * depth)
                 val fill = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
                     shader = RadialGradient(
@@ -114,19 +148,8 @@ internal object BloomRenderer : ArtRenderer {
                 val shadow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     color = ColorUtil.withAlpha(Backgrounds.deep(scene.background), if (scene.isLight) 0.18f else 0.5f)
                 }
-                val outline = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    style = Paint.Style.STROKE
-                    strokeWidth = max(1f, radius * 0.004f)
-                    color = ColorUtil.withAlpha(scene.color(tc + 0.45f), 0.35f + 0.35f * p.contrast)
-                }
-                val veinPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    style = Paint.Style.STROKE
-                    strokeWidth = max(0.8f, radius * 0.0025f)
-                    strokeCap = Paint.Cap.ROUND
-                    color = ColorUtil.withAlpha(scene.color(tc + 0.5f), 0.18f + 0.2f * p.detail)
-                }
                 Layer(
-                    petals, veins, fill, shadow, outline, veinPaint,
+                    petals, fill, shadow, lines,
                     rotation = 0f,
                     spin = (1.5f + 6f * p.motion) * if (l % 2 == 0) 1f else -1f,
                     breathPhase = l * 0.7f,
@@ -189,8 +212,7 @@ internal object BloomRenderer : ArtRenderer {
                 canvas.drawPath(layer.petals, layer.shadow)
                 canvas.restore()
                 canvas.drawPath(layer.petals, layer.fill)
-                canvas.drawPath(layer.veins, layer.veinPaint)
-                canvas.drawPath(layer.petals, layer.outline)
+                layer.lines.draw(canvas, linePaint)
                 canvas.restore()
             }
             val pulse = 1f + 0.05f * sin(timeSec * 2.2f) * (0.4f + p.energy)
